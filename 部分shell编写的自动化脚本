@@ -1,0 +1,82 @@
+#dfs.sh-hdfs启动脚本
+#!/bin/bash
+if [ $# -lt 1 ]
+then
+    echo "No Args Input..."
+    exit ;
+fi
+case $1 in
+"start")
+        echo " =================== 启动 hadoop集群 ==================="
+
+        echo " --------------- 启动 hdfs ---------------"
+        ssh hadoop102 "/opt/module/hadoop-3.3.4/sbin/start-dfs.sh"
+        echo " --------------- 启动 yarn ---------------"
+        ssh hadoop103 "/opt/module/hadoop-3.3.4/sbin/start-yarn.sh"
+        echo " --------------- 启动 historyserver ---------------"
+        ssh hadoop102 "/opt/module/hadoop-3.3.4/bin/mapred --daemon start historyserver"
+;;
+"stop")
+        echo " =================== 关闭 hadoop集群 ==================="
+
+        echo " --------------- 关闭 historyserver ---------------"
+@
+"hdf.sh" 31L, 1128C                                      16,9         顶端
+
+
+#hiveserivece.sh-metastore与hiveservice2启动脚本
+#!/bin/bash
+
+HIVE_LOG_DIR=$HIVE_HOME/logs
+if [ ! -d $HIVE_LOG_DIR ]
+then
+        mkdir -p $HIVE_LOG_DIR
+fi
+
+#检查进程是否运行正常，参数1为进程名，参数2为进程端口
+function check_process()
+{
+    pid=$(ps -ef 2>/dev/null | grep -v grep | grep -i $1 | awk '{print $2}')
+    ppid=$(netstat -nltp 2>/dev/null | grep $2 | awk '{print $7}' | cut -d '/' -f 1)
+    echo $pid
+    [[ "$pid" =~ "$ppid" ]] && [ "$ppid" ] && return 0 || return 1
+}
+
+function hive_start()
+{
+    metapid=$(check_process HiveMetastore 9083)
+@
+
+#jpsall启动组件查看脚本
+#!/bin/bash
+
+for host in hadoop102 hadoop103 hadoop104
+do
+        echo =============== $host ===============
+        ssh $host jps
+done
+
+#集群分发脚本
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+    echo Not Enough Arguement!
+    exit;
+fi
+
+#2. 遍历集群所有机器
+for host in hadoop102 hadoop103 hadoop104
+do
+    echo ====================  $host  ====================
+    #3. 遍历所有目录，挨个发送
+    for file in $@
+    do
+        #4. 判断文件是否存在
+        if [ -e $file ]
+            then
+                #5. 获取父目录
+                pdir=$(cd -P $(dirname $file); pwd)
+
+                #6. 获取当前文件的名称
+                fname=$(basename $file)
