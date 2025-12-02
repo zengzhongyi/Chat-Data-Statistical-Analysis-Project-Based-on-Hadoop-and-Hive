@@ -1,0 +1,142 @@
+#hdfs-site.xml
+[zzy@hadoop102 hadoop]$ tail -n 50 hdfs-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+        <!-- nn web端访问地址-->
+        <property>
+        <name>dfs.namenode.http-address</name>
+        <value>hadoop102:9870</value>
+    </property>
+        <!-- 2nn web端访问地址-->
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>hadoop104:9868</value>
+    </property>
+</configuration>
+
+#yarn-site.xml
+[zzy@hadoop102 hadoop]$ tail -n 50 yarn-site.xml
+<!-- 指定MR走shuffle -->
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+
+    <!-- 指定ResourceManager的地址-->
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>hadoop103</value>
+    </property>
+
+    <!-- 环境变量的继承 -->
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+    </property>
+
+<!-- 开启日志聚集功能 -->
+<property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+</property>
+
+<!-- 设置日志聚集服务器地址 -->
+<property>
+    <name>yarn.log.server.url</name>
+    <value>http://hadoop102:19888/jobhistory/logs</value>
+</property>
+
+<!-- 设置日志保留时间为7天 -->
+<property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>604800</value>
+</property>
+
+<!--是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认是true -->
+<property>
+     <name>yarn.nodemanager.pmem-check-enabled</name>
+     <value>false</value>
+</property>
+
+<!--是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认是true -->
+<property>
+     <name>yarn.nodemanager.vmem-check-enabled</name>
+     <value>false</value>
+</property>
+
+</configuration>
+
+
+#core-sit.xml
+[zzy@hadoop102 hadoop]$ tail -n 50 core-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- 指定NameNode的地址 -->
+<property>
+
+        <name>fs.defaultFS</name>
+        <value>hdfs://hadoop102:8020</value>
+    </property>
+
+    <!-- 指定hadoop数据的存储目录 -->
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/module/hadoop-3.3.4/data</value>
+    </property>
+
+    <!-- 配置HDFS网页登录使用的静态用户为hou -->
+    <property>
+        <name>hadoop.http.staticuser.user</name>
+        <value>zzy</value>
+    </property>
+
+    <!--配置所有节点的zpark用户都可作为代理用户-->
+    <property>
+        <name>hadoop.proxyuser.zzy.hosts</name>
+        <value>*</value>
+    </property>
+
+    <!--配置zpark用户能够代理的用户组为任意组-->
+    <property>
+        <name>hadoop.proxyuser.zzy.groups</name>
+        <value>*</value>
+    </property>
+
+    <!--配置zpark用户能够代理的用户为任意用户-->
+    <property>
+        <name>hadoop.proxyuser.zzy.users</name>
+        <value>*</value>
+    </property>
+</configuration>
+
+
+#mpred-sit.xml
+[zzy@hadoop102 hadoop]$ tail -n 50 mapred-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+        <!-- 指定MapReduce程序运行在Yarn上 -->
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+
+<!-- 历史服务器端地址 -->
+<property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>hadoop102:10020</value>
+</property>
+
+<!-- 历史服务器web端地址 -->
+<property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>hadoop102:19888</value>
+</property>
+
+</configuration>
+
